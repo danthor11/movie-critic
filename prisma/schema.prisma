@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  username String   @unique
+  email    String
+  password String
+  Profile  Profile?
+}
+
+model Movie {
+  id          Int          @id @default(autoincrement())
+  title       String
+  plot        String
+  directedBy  String[]
+  poster      String
+  genre       String[]
+  mainActors  String[]
+  releaseDate DateTime
+  MovieRated  MovieRated[]
+}
+
+model MovieRated {
+  id               Int      @id @default(autoincrement())
+  rated            Float    @default(0.0)
+  profileId        Int?
+  movieId          Int
+  contains_spoiler Boolean
+  date             DateTime
+  review           String
+  movie            Movie    @relation(fields: [movieId], references: [id])
+  Profile          Profile? @relation(fields: [profileId], references: [id])
+}
+
+model Profile {
+  id       Int          @id @default(autoincrement())
+  name     String
+  location String
+  bio      String
+  avatar   String
+  userId   Int          @unique
+  reviews  MovieRated[]
+  user     User         @relation(fields: [userId], references: [id])
+}
