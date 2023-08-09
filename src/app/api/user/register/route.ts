@@ -12,7 +12,9 @@ export interface UserRequest {
 export async function POST(request: NextRequest) {
   const { email, password, username } = (await request.json()) as UserRequest;
   try {
+    console.log({ email, password, username });
     const passwordHash = await bcrypt.hash(password, 10);
+
     const userExist = await prisma.user.findMany({
       where: { OR: [{ email }, { username }] },
     });
@@ -20,6 +22,7 @@ export async function POST(request: NextRequest) {
     if (userExist.length)
       return getErrorResponse(400, "Email or username already exists.");
 
+    console.log("SDDS");
     const userSaved = await prisma?.user.create({
       data: {
         email,
@@ -27,6 +30,7 @@ export async function POST(request: NextRequest) {
         username,
       },
     });
+    console.log("SDDS");
 
     // const profile = await prisma.profile.create({
     //   data: {
@@ -40,6 +44,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ userSaved });
   } catch (error) {
+    console.log(error, "error");
     return NextResponse.json({ error }, { status: 410 });
   }
 }

@@ -11,7 +11,7 @@ interface Params {
 export async function DELETE(req: NextRequest, { params }: Params) {
   try {
     const isDeleted = prisma.profile.delete({
-      where: { id: parseInt(params.id) },
+      where: { id: params.id },
     });
     return NextResponse.json({ result: isDeleted || false });
   } catch (error) {
@@ -32,7 +32,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
 
   try {
     const profile = await prisma.profile.findMany({
-      where: { id: parseInt(params.id) },
+      where: { id: params.id },
     });
 
     if (!profile) return getErrorResponse(400, "Profile doesnt exists");
@@ -45,12 +45,16 @@ export async function PUT(req: NextRequest, { params }: Params) {
     if (location) newData.location = location;
 
     const profileUpdated = await prisma.profile.update({
-      where: { id: parseInt(params.id) },
+      where: { id: params.id },
       data: newData,
+      include: {
+        user: { select: { email: true, username: true, image: true } },
+      },
     });
 
-    return NextResponse.json({ profileUpdated });
+    return NextResponse.json(profileUpdated);
   } catch (error) {
+    console.log(error);
     return getErrorResponse(400, "Occur an error");
   }
 }
@@ -58,12 +62,13 @@ export async function PUT(req: NextRequest, { params }: Params) {
 export async function GET(req: NextRequest, { params }: Params) {
   try {
     const profile = await prisma.profile.findFirstOrThrow({
-      where: { id: parseInt(params.id) },
-      include: { user: { select: { email: true, username: true } } },
+      where: { id: params.id },
+      include: { user: { select: { email: true, username: true, id: true } } },
     });
 
     return NextResponse.json(profile);
   } catch (error) {
+    console.log(error);
     return getErrorResponse(400, "Error trying getting profile data");
   }
 }

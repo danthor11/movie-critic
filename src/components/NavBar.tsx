@@ -1,9 +1,16 @@
 "use client";
 import Link from "next/link";
 import React, { useState } from "react";
+import { useSession, signOut } from "next-auth/react";
 
 export const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { status } = useSession();
+  console.log(status);
+
+  const handleLogout = async () => {
+    return await signOut({ callbackUrl: "/" });
+  };
 
   return (
     <header>
@@ -41,23 +48,42 @@ export const NavBar = () => {
             }  w-full md:block md:w-auto`}
           >
             <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-              <li onClick={() => setIsOpen(false)}>
-                <Link href="/login" className="navbar-link">
-                  Sign In
-                </Link>
-              </li>
+              {status === "unauthenticated" && (
+                <>
+                  <li onClick={() => setIsOpen(false)}>
+                    <Link href="/login" className="navbar-link">
+                      Sign In
+                    </Link>
+                  </li>
 
-              <li onClick={() => setIsOpen(false)}>
-                <Link href="/register" className="navbar-link">
-                  Sign Up
-                </Link>
-              </li>
+                  <li onClick={() => setIsOpen(false)}>
+                    <Link href="/register" className="navbar-link">
+                      Sign Up
+                    </Link>
+                  </li>
+                </>
+              )}
 
               <li onClick={() => setIsOpen(false)}>
                 <Link href="/movies" className="navbar-link">
                   Movies
                 </Link>
               </li>
+              {status === "authenticated" && (
+                <>
+                  <hr color="gray" className="my-1" />
+                  <li onClick={() => setIsOpen(false)}>
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                      }}
+                      className="navbar-link w-full hover:text-white transition-colors bg-red-500 hover:bg-red-600"
+                    >
+                      Logout
+                    </button>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
         </div>

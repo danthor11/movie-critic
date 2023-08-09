@@ -7,45 +7,80 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Account {
+  id                 String    @id @default(cuid())
+  userId             String
+  providerType       String
+  providerId         String
+  providerAccountId  String
+  refreshToken       String?
+  accessToken        String?
+  accessTokenExpires DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  user               User      @relation(fields: [userId], references: [id])
+
+  @@unique([providerId, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  userId       String
+  expires      DateTime
+  sessionToken String   @unique
+  accessToken  String   @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id])
+}
+
 model User {
-  id       Int      @id @default(autoincrement())
-  username String   @unique
-  email    String
-  password String
-  Profile  Profile?
+  id        String    @id @default(cuid())
+  username  String    @unique
+  email     String
+  password  String
+  image     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  accounts  Account[]
+  Profile   Profile?
+  sessions  Session[]
 }
 
 model Movie {
-  id          Int          @id @default(autoincrement())
-  title       String
-  plot        String
-  directedBy  String[]
-  poster      String
-  genre       String[]
-  mainActors  String[]
-  releaseDate DateTime
-  MovieRated  MovieRated[]
+  id             String       @id @default(cuid())
+  title          String
+  original_title String
+  plot           String
+  directedBy     String[]
+  poster         String
+  genre          String[]
+  mainActors     String[]
+  releaseDate    DateTime
+  MovieRated     MovieRated[]
 }
 
 model MovieRated {
-  id               Int      @id @default(autoincrement())
+  id               String   @id @default(cuid())
   rated            Float    @default(0.0)
-  profileId        Int?
-  movieId          Int
-  contains_spoiler Boolean
+  profileId        String?
+  movieId          String
+  contains_spoiler Boolean  @default(false)
   date             DateTime
   review           String
+  already_watched  Boolean  @default(false)
+  liked            Boolean  @default(false)
   movie            Movie    @relation(fields: [movieId], references: [id])
   Profile          Profile? @relation(fields: [profileId], references: [id])
 }
 
 model Profile {
-  id       Int          @id @default(autoincrement())
+  id       String       @id @default(cuid())
   name     String
   location String
   bio      String
   avatar   String
-  userId   Int          @unique
+  userId   String       @unique
   reviews  MovieRated[]
   user     User         @relation(fields: [userId], references: [id])
 }

@@ -1,40 +1,96 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { hasCookie } from "cookies-next";
-import { getProfileById } from "@/services/profile";
+import { useCallback, useEffect, useState } from "react";
+import {
+  ProfileBody,
+  ProfileState,
+  createProfile,
+  getProfileById,
+  updateProfileById,
+} from "@/services/profile";
+import { updateEmailById } from "@/services/user";
 
-interface ProfileState {
-  avatar: string;
-  bio: string;
-  id: string;
-  location: string;
-  name: string;
-  user: {
-    email: string;
-    username: string;
-  };
-  userId: string;
+interface ProfileToUpdate extends ProfileBody {
+  email: string;
 }
 
-export const useProfile = (id: number) => {
+export const useProfile = (id: string) => {
   const [profile, setProfile] = useState<ProfileState>();
 
-  useEffect(() => {
-    const getProfile = async () => {
-      try {
-        const res = await getProfileById(id);
-        const data = await res.json();
-        console.log(data);
+  const [isFetching, setIsFetching] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-        setProfile(data);
+  const toggleLoading = useCallback(
+    (state: boolean) => {
+      if (!profile) {
+        setIsFetching(state);
+      } else {
+        setIsLoading(state);
+      }
+    },
+    [id]
+  );
+
+  const getProfile = useCallback(async () => {
+    try {
+      toggleLoading(true);
+      const res = await getProfileById(id);
+
+      toggleLoading(false);
+      setProfile(res);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [id, toggleLoading]);
+
+  useEffect(() => {
+    getProfile();
+  }, [id, getProfile]);
+
+  const updateProfile = useCallback(
+    async (
+      { avatar, bio, email, location, name }: ProfileToUpdate,
+      profileId: string
+    ) => {
+      try {
+        setIsLoading(true);
+        const [_, newProfile] = await Promise.all([
+          updateEmailById(id, email),
+          updateProfileById(profileId, {
+            avatar,
+            bio,
+            location,
+            name,
+          }),
+        ]);
+        setProfile(newProfile);
       } catch (error) {
         console.log(error);
+      } finally {
+        setIsLoading(false);
       }
-    };
-    getProfile();
-  }, [id]);
+    },
+    [id]
+  );
+
+  const newProfile = async (body: ProfileBody) => {
+    try {
+      setIsLoading(true);
+      const res = await createProfile(id, body);
+
+      return res;
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return {
     profile,
+    isLoading,
+    isFetching,
+
+    newProfile,
+    updateProfile,
   };
 };

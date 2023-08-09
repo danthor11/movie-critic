@@ -1,31 +1,51 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyJWT } from "./lib/jwt";
 import { getErrorResponse } from "./lib/helpers";
+import { getToken } from "next-auth/jwt";
+import { prisma } from "@/lib/prisma";
 
-//Extension del request
 interface AuthenticatedRequest extends NextRequest {
   user: {
     id: string;
   };
 }
 
-export async function middleware(req: NextRequest) {
-  let token: string | undefined;
+export async function middleware(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
-  if (req.cookies.has("token")) {
-    token = req.cookies.get("token")?.value;
-  } else if (req.headers.get("Authorization")?.startsWith("Bearer ")) {
-    token = req.headers.get("Authorization")?.substring(7);
+  if (req.nextUrl.pathname === "/") return;
+
+  if (
+    req.nextUrl.pathname.startsWith("/profile") &&
+    req.nextUrl.pathname.endsWith("create")
+  ) {
+    const id = req.nextUrl.pathname.slice(
+      9,
+      req.nextUrl.pathname.lastIndexOf("/")
+    );
+    const res = await fetch(`http://localhost:3000/api/user/${id}`);
+    const user = await res.json();
+
+    if (user && user?.Profile)
+      return NextResponse.redirect(new URL(`/profile/${id}`, req.url));
+
+    return;
   }
 
-  // ? Validacion para rutas API
-  console.log(token);
-  if (req.nextUrl.pathname.startsWith("/login")) return;
+  if (req.nextUrl.pathname.startsWith("/profile/")) {
+    const id = req.nextUrl.pathname.slice(9, req.nextUrl.pathname.length);
 
-  console.log(
-    !token && req.nextUrl.pathname.startsWith("/api/profile"),
-    req.nextUrl.pathname
-  );
+    const res = await fetch(`http://localhost:3000/api/user/${id}`);
+    const user = await res.json();
+
+    if (user && user?.Profile)
+      return NextResponse.redirect(new URL(`/profile/${id}/create`, req.url));
+
+    return;
+  }
+
   if (
     !token &&
     (req.nextUrl.pathname.startsWith("/api/rated") ||
@@ -40,27 +60,42 @@ export async function middleware(req: NextRequest) {
   const response = NextResponse.next();
 
   try {
-    if (token) {
-      const { id } = await verifyJWT<{ id: number }>(token);
-      response.headers.set("X-USER-ID", id.toString());
-
+    if (token?.sub) {
       (req as AuthenticatedRequest).user = {
-        id: id.toString(),
+        id: token.sub,
       };
     }
   } catch (error) {
-    return NextResponse.redirect(new URL(`/login`, req.url));
+    console.log(error);
+    return;
   }
 
   const authUser = (req as AuthenticatedRequest).user;
 
-  if (req.url.includes("/login") && authUser) {
-    return NextResponse.redirect(new URL("/profile", req.url));
+  if (!authUser && req.nextUrl.pathname.startsWith("/login")) return;
+  if (!authUser && req.nextUrl.pathname.startsWith("/register")) return;
+
+  if (!authUser) return NextResponse.redirect(new URL("/login", req.url));
+
+  if (
+    (req.url.includes("/login") || req.url.includes("/register")) &&
+    authUser
+  ) {
+    return NextResponse.redirect(new URL(`/profile/${authUser.id}`, req.url));
   }
 
   return response;
 }
 
 export const config = {
-  matcher: ["/api/rated", "/api/profile", "/api/profile/:path*"],
+  matcher: [
+    "/api/rated",
+    "/api/profile",
+    "/api/profile/:path*",
+    "/profile/:id/create",
+    "/profile/:id",
+    "/login",
+    "/register",
+    "/",
+  ],
 };

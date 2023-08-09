@@ -1,4 +1,5 @@
 "use client";
+import { createRateMovie } from "@/services/movies";
 import Image from "next/image";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -11,7 +12,7 @@ interface RateForm {
 }
 
 interface Props {
-  profileId: number;
+  profileId: string;
   movie: number;
   title: string;
   poster: string;
@@ -33,13 +34,21 @@ const RateForm = (props: Props) => {
     },
   });
 
-  console.log(props);
+  console.log(props.movie);
+  const onSubmit = handleSubmit(
+    async ({ contains_spoiler, date, rated, review }, event) => {
+      event?.preventDefault();
 
-  const onSubmit = handleSubmit(async (data, event) => {
-    event?.preventDefault();
-
-    console.log(data);
-  });
+      await createRateMovie({
+        contains_spoiler,
+        date,
+        movieId: props.movie,
+        rated,
+        review,
+        userId: props.profileId,
+      });
+    }
+  );
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col p-3 ">
@@ -48,11 +57,14 @@ const RateForm = (props: Props) => {
           {props.title}{" "}
           <span className=" text-sm text-gray-500">{props.year}</span>
         </h2>
-        <div>
-          <img
-            className="w-auto h-16 rounded-sm border border-gray-500"
+        <div className=" rounded-sm border border-gray-500">
+          <Image
+            className="w-auto h-16"
             src={`https://image.tmdb.org/t/p/original${props.poster}`}
             alt={props.title}
+            width={42}
+            height={64}
+            quality={50}
           />
         </div>
       </div>
@@ -62,14 +74,16 @@ const RateForm = (props: Props) => {
         <input
           type="date"
           className="w-fit focus-visible:outline-none"
-          {...register("date")}
+          {...register("date", {
+            required: { value: true, message: "Date is required" },
+          })}
         />
       </div>
 
       <div className="flex flex-col border-b py-1 border-b-gray-600">
         <label className="">Rate:</label>
-        <div className="mb-3 bg-gray-700 border border-gray-600 p-2 rounded-md">
-          <h3 className="text-center text-xl font-semibold mb-1">
+        <div className="mb-3 bg-gray-700 border border-gray-600 p-1 rounded-md max-w-[250px] self-center">
+          <h3 className="text-center text-sm font-semibold ">
             {watch("rated")}%
           </h3>
           <input
@@ -90,9 +104,9 @@ const RateForm = (props: Props) => {
            `}
           ></input>
           <div></div>
-          <div className="flex justify-between px-1 py-1">
-            <p>0%</p>
-            <p>100%</p>
+          <div className="flex justify-between  text-sm px-1 pt-1">
+            <p>0</p>
+            <p>100</p>
           </div>
         </div>
       </div>
@@ -104,7 +118,9 @@ const RateForm = (props: Props) => {
           cols={4}
           rows={4}
           className="focus-visible:outline-none resize-none"
-          {...register("review")}
+          {...register("review", {
+            required: { message: "Review is required", value: true },
+          })}
           placeholder="Write your review..."
         />
       </div>
@@ -128,11 +144,7 @@ const RateForm = (props: Props) => {
             Already watched
           </span>
           <div className="relative">
-            <input
-              type="checkbox"
-              className="sr-only peer"
-              {...register("contains_spoiler")}
-            />
+            <input type="checkbox" className="sr-only peer" />
             <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
           </div>
         </label>

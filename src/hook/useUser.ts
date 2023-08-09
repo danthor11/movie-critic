@@ -14,14 +14,26 @@ export const useUser = () => {
     try {
       setIsLoading(true);
       const res = await registerUser(user);
+      if (!res.ok) throw Error(JSON.stringify(await res.json()));
+
       return await res.json();
     } catch (error) {
-      console.log(error);
       if (typeof error === "string")
         setError({
           isError: true,
           message: error,
         });
+      else if (error instanceof Error) {
+        const objectError = JSON.parse(error.message);
+        setError({
+          isError: true,
+          message: objectError.message,
+        });
+      }
+
+      setTimeout(() => {
+        setError({ isError: false, message: "" });
+      }, 4000);
     } finally {
       setIsLoading(false);
     }

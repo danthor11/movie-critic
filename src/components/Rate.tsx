@@ -33,7 +33,7 @@ export const Rate = ({ rate }: Props) => {
 
   console.log(getBgColor());
   return (
-    <div className={`p-[2px] rounded-full opacity-80 ${getBgColor().outer}`}>
+    <div className={`p-[2px] rounded-full ${getBgColor().outer}`}>
       <div className="relative ">
         <div
           className={`outer flex justify-center items-center ${
@@ -49,7 +49,7 @@ export const Rate = ({ rate }: Props) => {
         </div>
         <svg
           viewBox="0 0 100 100"
-          className="absolute w-[40px] h-[40px] top-0 left-0"
+          className="absolute w-[40px] h-[40px] top-0 left-0 "
         >
           <circle
             id="circle"

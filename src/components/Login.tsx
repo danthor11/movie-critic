@@ -1,33 +1,52 @@
 "use client";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 interface LoginData {
   username: string;
   password: string;
 }
+interface Props {
+  successCBUrl: string;
+}
 
-export const Login = () => {
+export const Login = ({ successCBUrl = "/" }: Props) => {
   const {
     handleSubmit,
     register,
-    formState: { errors },
+    formState: { errors, isSubmitting },
+    setError,
   } = useForm<LoginData>();
+  const router = useRouter();
 
   const onSubmit = handleSubmit(async (data, event) => {
     event?.preventDefault();
-    const res = await fetch("/api/user/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
 
-    const json = await res.json();
+    try {
+      const res = await signIn("credentials", {
+        username: data.username,
+        password: data.password,
+        redirect: false,
+        callbackUrl: successCBUrl,
+      });
 
-    console.log(json);
+      if (res?.error) {
+        throw Error(res.error);
+      }
+
+      router.push(successCBUrl);
+    } catch (error) {
+      if (error instanceof Error) {
+        setError("root", { message: error.message });
+      }
+
+      setTimeout(() => {
+        setError("root", { message: "" });
+      }, 5000);
+    }
   });
 
   return (
@@ -47,7 +66,7 @@ export const Login = () => {
           </div>
           <input
             type="text"
-            className="block my-2 pl-10 rounded-2xl"
+            className="block w-full p-2.5 pl-10 my-2  rounded-2xl"
             {...register("username", {
               required: {
                 value: true,
@@ -64,7 +83,6 @@ export const Login = () => {
           </span>
         )}
       </div>
-
       <div className="mb-6">
         <div className="relative ">
           <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
@@ -79,7 +97,7 @@ export const Login = () => {
           </div>
           <input
             type="password"
-            className="block my-2 pl-10 rounded-2xl"
+            className="block my-2 w-full p-2.5 pl-10 rounded-2xl"
             {...register("password", {
               required: {
                 value: true,
@@ -95,15 +113,20 @@ export const Login = () => {
             {errors.password.message}
           </span>
         )}
-      </div>
 
+        {errors.root && (
+          <span className="text-sm text-red-700 italic  block ">
+            {errors.root.message}
+          </span>
+        )}
+      </div>
       <button
-        className="rounded-3xl mx-auto block 
+        disabled={isSubmitting}
+        className="rounded-3xl mx-auto block  disabled:bg-blue-950
       py-2 px-6 text-gray-900 font-semibold  transition-colors bg-blue-600 hover:bg-blue-800"
       >
         Login
       </button>
-
       <p className="text-xs text-gray-500 mt-4 text-center">
         Dont have an account? please{" "}
         <Link href={"/register"} className="text-gray-300">

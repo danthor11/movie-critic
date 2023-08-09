@@ -1,9 +1,10 @@
 "use client";
 import { useUser } from "@/hook/useUser";
-import { registerUser } from "@/services/user";
 import Link from "next/link";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 interface RegisterData {
   username: string;
@@ -19,15 +20,34 @@ export const Register = () => {
     reset,
     setError,
   } = useForm<RegisterData>();
-
+  const router = useRouter();
   const { isLoading, createUser, error } = useUser();
 
   const onSubmit = handleSubmit(async (data, event) => {
     event?.preventDefault();
     try {
-      await createUser(data);
-      reset();
-    } catch (error) {}
+      const { userSaved } = await createUser(data);
+
+      if (userSaved) {
+        reset();
+
+        await signIn("credentials", {
+          username: userSaved.username,
+          password: userSaved.password,
+          redirect: false,
+        });
+
+        router.push(`/profile/${userSaved.id}`);
+      }
+    } catch (err) {
+      let message = "Algo salio mal";
+
+      setError("root", { message: error?.message || message });
+
+      setTimeout(() => {
+        setError("root", {});
+      }, 4000);
+    }
   });
 
   return (
@@ -47,7 +67,7 @@ export const Register = () => {
           </div>
           <input
             type="text"
-            className="block my-2 pl-10 rounded-2xl"
+            className="block my-2 p-2.5 w-full pl-10 rounded-2xl"
             {...register("username", {
               required: {
                 value: true,
@@ -78,11 +98,16 @@ export const Register = () => {
           </div>
           <input
             type="text"
-            className="block my-2 pl-10 rounded-2xl"
+            className="block my-2 p-2.5 w-full pl-10 rounded-2xl"
             {...register("email", {
               required: {
                 value: true,
-                message: "Se requiere el email.",
+                message: "Email is required",
+              },
+              pattern: {
+                value:
+                  /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/,
+                message: "Write a valid email address",
               },
             })}
             placeholder="Email"
@@ -96,7 +121,7 @@ export const Register = () => {
         )}
       </div>
 
-      <div className="mb-6">
+      <div className="mb-2">
         <div className="relative ">
           <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
             <svg
@@ -110,11 +135,15 @@ export const Register = () => {
           </div>
           <input
             type="password"
-            className="block my-2 pl-10 rounded-2xl"
+            className="block my-2 p-2.5 w-full pl-10 rounded-2xl"
             {...register("password", {
               required: {
                 value: true,
                 message: "Se requiere la contraseña.",
+              },
+              minLength: {
+                value: 8,
+                message: "Password require at least 8 characters",
               },
             })}
             placeholder="Password"
@@ -136,7 +165,7 @@ export const Register = () => {
       <button
         disabled={isLoading}
         className="rounded-3xl mx-auto block 
-        disabled:bg-blue-950
+        disabled:bg-blue-950 mt-3 
       py-2 px-6 text-gray-900 font-semibold  transition-colors bg-blue-600 hover:bg-blue-800"
       >
         Sign up
