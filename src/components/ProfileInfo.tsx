@@ -16,7 +16,6 @@ interface ProfileData {
 }
 
 export const ProfileInfo = ({ id }: Props) => {
-  console.log(id);
   const { profile, isLoading, isFetching, updateProfile } = useProfile(id);
   const [isEdit, setIsEdit] = useState(false);
   const { register, handleSubmit, setValue } = useForm<ProfileData>();

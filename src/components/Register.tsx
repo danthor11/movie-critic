@@ -37,7 +37,7 @@ export const Register = () => {
           redirect: false,
         });
 
-        router.push(`/profile/${userSaved.id}`);
+        router.push(`/profile/${userSaved.id}/create`);
       }
     } catch (err) {
       let message = "Algo salio mal";

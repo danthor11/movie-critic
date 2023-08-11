@@ -3,6 +3,7 @@ import { createRateMovie } from "@/services/movies";
 import Image from "next/image";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { Movie } from "./MovieList";
 
 interface RateForm {
   rated: number;
@@ -17,6 +18,7 @@ interface Props {
   title: string;
   poster: string;
   year: string;
+  closeModal: (body?: Movie) => void;
 }
 
 const RateForm = (props: Props) => {
@@ -34,7 +36,6 @@ const RateForm = (props: Props) => {
     },
   });
 
-  console.log(props.movie);
   const onSubmit = handleSubmit(
     async ({ contains_spoiler, date, rated, review }, event) => {
       event?.preventDefault();
@@ -47,6 +48,10 @@ const RateForm = (props: Props) => {
         review,
         userId: props.profileId,
       });
+
+      props.closeModal();
+
+      //Desplegar un mensaje de creacion
     }
   );
 
@@ -73,7 +78,7 @@ const RateForm = (props: Props) => {
         <label htmlFor="">Date</label>
         <input
           type="date"
-          className="w-fit focus-visible:outline-none"
+          className="w-fit p-2.5 focus-visible:outline-none"
           {...register("date", {
             required: { value: true, message: "Date is required" },
           })}
@@ -82,7 +87,7 @@ const RateForm = (props: Props) => {
 
       <div className="flex flex-col border-b py-1 border-b-gray-600">
         <label className="">Rate:</label>
-        <div className="mb-3 bg-gray-700 border border-gray-600 p-1 rounded-md max-w-[250px] self-center">
+        <div className="mb-3  border border-gray-600 p-1 rounded-md max-w-[250px] self-center">
           <h3 className="text-center text-sm font-semibold ">
             {watch("rated")}%
           </h3>

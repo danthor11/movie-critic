@@ -69,15 +69,20 @@ export const NavBar = () => {
                   Movies
                 </Link>
               </li>
+              <li onClick={() => setIsOpen(false)}>
+                <Link href="/reviews" className="navbar-link">
+                  Reviews
+                </Link>
+              </li>
               {status === "authenticated" && (
                 <>
-                  <hr color="gray" className="my-1" />
+                  <hr color="gray" className="my-1 md:hidden" />
                   <li onClick={() => setIsOpen(false)}>
                     <button
                       onClick={() => {
                         handleLogout();
                       }}
-                      className="navbar-link w-full hover:text-white transition-colors bg-red-500 hover:bg-red-600"
+                      className="navbar-link w-full hover:text-white transition-colors bg-red-500 hover:bg-red-600 md:hover:bg-red-700 md:bg-red-600 md:text-white md:px-2"
                     >
                       Logout
                     </button>

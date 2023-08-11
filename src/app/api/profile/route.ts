@@ -31,12 +31,10 @@ export async function POST(req: NextRequest) {
         { error: "All fields are required" },
         { status: 410 }
       );
-    console.log({ avatar, bio, location, name, userId });
 
     const profile = await prisma.profile.create({
       data: { avatar, bio, location, name, userId },
     });
-    console.log(profile);
 
     return NextResponse.json(profile);
   } catch (error) {

@@ -1,3 +1,4 @@
+import { Cast, MovieDetail } from "@/types/movieDetailResponse";
 import { MovieResponse } from "@/types/movieResponse";
 
 export const API_URL = "https://api.themoviedb.org/3";
@@ -32,4 +33,15 @@ export const createRateMovie = async (rate: RateCreate) => {
     method: "POST",
     body: JSON.stringify(rate),
   });
+};
+
+export interface MovieDataDetails extends MovieDetail {
+  directedBy: Cast[];
+  mainActors: Cast[];
+}
+
+export const getMovieDetailById = (id: number): Promise<MovieDataDetails> => {
+  return fetch(`/api/movies/detail/${id}`)
+    .then((res) => res.json())
+    .catch((err) => err);
 };

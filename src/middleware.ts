@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getErrorResponse } from "./lib/helpers";
 import { getToken } from "next-auth/jwt";
-import { prisma } from "@/lib/prisma";
 
 interface AuthenticatedRequest extends NextRequest {
   user: {
@@ -21,6 +20,8 @@ export async function middleware(
     req.nextUrl.pathname.startsWith("/profile") &&
     req.nextUrl.pathname.endsWith("create")
   ) {
+    console.log("create");
+
     const id = req.nextUrl.pathname.slice(
       9,
       req.nextUrl.pathname.lastIndexOf("/")
@@ -30,20 +31,17 @@ export async function middleware(
 
     if (user && user?.Profile)
       return NextResponse.redirect(new URL(`/profile/${id}`, req.url));
-
     return;
-  }
-
-  if (req.nextUrl.pathname.startsWith("/profile/")) {
+  } else if (req.nextUrl.pathname.startsWith("/profile/")) {
     const id = req.nextUrl.pathname.slice(9, req.nextUrl.pathname.length);
 
     const res = await fetch(`http://localhost:3000/api/user/${id}`);
     const user = await res.json();
+    console.log(id, user);
 
-    if (user && user?.Profile)
-      return NextResponse.redirect(new URL(`/profile/${id}/create`, req.url));
+    if (user && user?.Profile) return;
 
-    return;
+    return NextResponse.redirect(new URL(`/profile/${id}/create`, req.url));
   }
 
   if (
@@ -89,13 +87,12 @@ export async function middleware(
 
 export const config = {
   matcher: [
-    "/api/rated",
+    "/",
+    "/register/",
+    "/login/",
+    "/profile/:id/",
+    "/profile/:id/create",
     "/api/profile",
     "/api/profile/:path*",
-    "/profile/:id/create",
-    "/profile/:id",
-    "/login",
-    "/register",
-    "/",
   ],
 };

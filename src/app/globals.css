@@ -181,6 +181,27 @@ textarea {
   z-index: 1;
 }
 
+.bg-shadow-inside::after {
+  content: "";
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: absolute;
+  height: 40vh;
+  background: linear-gradient(transparent, rgb(24 24 27));
+}
+
+.bg-shadow-inside::before {
+  content: "";
+  top: 0;
+
+  left: 0;
+  right: 0;
+  position: absolute;
+  height: 25vh;
+  background: linear-gradient(rgb(17 24 39), transparent);
+}
+
 .bg-login-modal::after {
   content: "";
   position: absolute;
@@ -200,4 +221,206 @@ textarea {
 
 .transition-visibility {
   transition: visibility 0.3s linear, opacity 0.3s linear;
+}
+
+.ul-with-colors > li:nth-child(8n + 1) {
+  background-color: rgba(200, 14, 110, 0.8);
+  transition: all 0.3s ease-in;
+  cursor: pointer;
+}
+.ul-with-colors > li:nth-child(8n + 2) {
+  background-color: rgba(79, 17, 173, 0.8);
+  transition: all 0.3s ease-in;
+  cursor: pointer;
+}
+.ul-with-colors > li:nth-child(8n + 3) {
+  background-color: rgba(41, 24, 192, 0.8);
+  transition: all 0.3s ease-in;
+  cursor: pointer;
+}
+.ul-with-colors > li:nth-child(8n + 4) {
+  background-color: rgba(164, 16, 16, 0.8);
+  transition: all 0.3s ease-in;
+  cursor: pointer;
+}
+.ul-with-colors > li:nth-child(8n + 5) {
+  background-color: rgba(171, 56, 22, 0.8);
+  transition: all 0.3s ease-in;
+  cursor: pointer;
+}
+.ul-with-colors > li:nth-child(8n + 6) {
+  background-color: rgba(20, 167, 25, 0.8);
+  transition: all 0.3s ease-in;
+  cursor: pointer;
+}
+.ul-with-colors > li:nth-child(8n + 7) {
+  background-color: rgba(28, 189, 140, 0.8);
+  transition: all 0.3s ease-in;
+  cursor: pointer;
+}
+.ul-with-colors > li:nth-child(8n + 8) {
+  background-color: rgba(154, 19, 48, 0.8);
+  transition: all 0.3s ease-in;
+  cursor: pointer;
+}
+
+.ul-with-colors > li:nth-child(8n + 1):hover {
+  background-color: rgba(241, 50, 148, 0.8);
+}
+.ul-with-colors > li:nth-child(8n + 2):hover {
+  background-color: rgba(115, 37, 232, 0.8);
+}
+.ul-with-colors > li:nth-child(8n + 3):hover {
+  background-color: rgba(55, 37, 232, 0.8);
+}
+.ul-with-colors > li:nth-child(8n + 4):hover {
+  background-color: rgba(232, 37, 37, 0.8);
+}
+.ul-with-colors > li:nth-child(8n + 5):hover {
+  background-color: rgba(232, 83, 37, 0.8);
+}
+.ul-with-colors > li:nth-child(8n + 6):hover {
+  background-color: rgba(37, 232, 43, 0.8);
+}
+.ul-with-colors > li:nth-child(8n + 7):hover {
+  background-color: rgba(37, 232, 173, 0.8);
+}
+.ul-with-colors > li:nth-child(8n + 8):hover {
+  background-color: rgba(232, 37, 79, 0.8);
+}
+/* 
+ * ? UL SECONDARY
+ */
+
+.ul-with-colors-secondary > li:nth-child(8n + 1) {
+  background-color: rgba(41, 24, 192, 0.8);
+  transition: all 0.3s ease-in;
+  cursor: pointer;
+}
+.ul-with-colors-secondary > li:nth-child(8n + 2) {
+  background-color: rgba(164, 16, 16, 0.8);
+  transition: all 0.3s ease-in;
+  cursor: pointer;
+}
+.ul-with-colors-secondary > li:nth-child(8n + 3) {
+  background-color: rgba(171, 56, 22, 0.8);
+  transition: all 0.3s ease-in;
+  cursor: pointer;
+}
+.ul-with-colors-secondary > li:nth-child(8n + 4) {
+  background-color: rgba(79, 17, 173, 0.8);
+  transition: all 0.3s ease-in;
+  cursor: pointer;
+}
+.ul-with-colors-secondary > li:nth-child(8n + 5) {
+  background-color: rgba(20, 167, 25, 0.8);
+  transition: all 0.3s ease-in;
+  cursor: pointer;
+}
+.ul-with-colors-secondary > li:nth-child(8n + 6) {
+  background-color: rgba(200, 14, 110, 0.8);
+  transition: all 0.3s ease-in;
+  cursor: pointer;
+}
+.ul-with-colors-secondary > li:nth-child(8n + 7) {
+  background-color: rgba(154, 19, 48, 0.8);
+  transition: all 0.3s ease-in;
+  cursor: pointer;
+}
+.ul-with-colors-secondary > li:nth-child(8n + 8) {
+  background-color: rgba(28, 189, 140, 0.8);
+  transition: all 0.3s ease-in;
+  cursor: pointer;
+}
+
+.ul-with-colors-secondary > li:nth-child(8n + 1):hover {
+  background-color: rgba(55, 37, 232, 0.8);
+}
+.ul-with-colors-secondary > li:nth-child(8n + 2):hover {
+  background-color: rgba(232, 37, 37, 0.8);
+}
+.ul-with-colors-secondary > li:nth-child(8n + 3):hover {
+  background-color: rgba(232, 83, 37, 0.8);
+}
+.ul-with-colors-secondary > li:nth-child(8n + 4):hover {
+  background-color: rgba(115, 37, 232, 0.8);
+}
+.ul-with-colors-secondary > li:nth-child(8n + 5):hover {
+  background-color: rgba(37, 232, 43, 0.8);
+}
+.ul-with-colors-secondary > li:nth-child(8n + 6):hover {
+  background-color: rgba(241, 50, 148, 0.8);
+}
+.ul-with-colors-secondary > li:nth-child(8n + 7):hover {
+  background-color: rgba(232, 37, 79, 0.8);
+}
+.ul-with-colors-secondary > li:nth-child(8n + 8):hover {
+  background-color: rgba(37, 232, 173, 0.8);
+}
+
+/* 
+  *
+    LOADING COMPONENT
+  *
+*/
+
+.shape {
+  animation: moveCircle 1250ms ease-in-out both infinite;
+}
+
+.shape:nth-child(1) {
+  cx: 80;
+  fill: rgba(55, 37, 232, 0.8);
+}
+
+.shape:nth-child(2) {
+  cx: 160;
+  fill: rgba(115, 37, 232, 0.8);
+  animation-delay: 100ms;
+}
+
+.shape:nth-child(3) {
+  cx: 240;
+  fill: rgba(232, 37, 79, 0.8);
+  animation-delay: 200ms;
+}
+
+.shape:nth-child(4) {
+  cx: 320;
+  fill: rgba(241, 50, 148, 0.8);
+  animation-delay: 300ms;
+}
+
+.shape:nth-child(5) {
+  cx: 400;
+  fill: rgba(37, 232, 43, 0.8);
+  animation-delay: 400ms;
+}
+
+@keyframes moveCircle {
+  50% {
+    cy: 150;
+    r: 13;
+  }
+}
+
+/* 
+
+*/
+
+.mini-poster-hover::before {
+  border: 0px solid rgb(219, 220, 220);
+  transition: all 0.3s ease;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  content: "";
+  position: absolute;
+  right: 0;
+  border-radius: 4px;
+}
+
+.mini-poster-hover:hover::before {
+  border-width: 5px;
+  box-sizing: border-box;
 }

@@ -1,5 +1,7 @@
+import { Loading } from "@/components/Loading";
 import { MovieList } from "@/components/MovieList";
 import RateForm from "@/components/RateForm";
+import { Reviews } from "@/components/Reviews";
 import Link from "next/link";
 
 export default function Home() {
@@ -33,7 +35,10 @@ export default function Home() {
 
       <section className="h-[calc(50vh-5rem)]">Trending Movies</section>
 
-      <section className="h-[calc(50vh-5rem)]">Last rates</section>
+      <section className="min-h-[calc(50vh-5rem)]">
+        <h2>Last reviews</h2>
+        <Reviews />
+      </section>
 
       <section className="h-[calc(50vh-5rem)]">
         POPULAR REVIEWS THIS WEEK

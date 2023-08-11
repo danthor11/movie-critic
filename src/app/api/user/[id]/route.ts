@@ -66,7 +66,6 @@ export async function GET(
         },
       },
     });
-    console.log(user);
     return NextResponse.json(user);
   } catch (error) {
     console.log(error, "error,get");

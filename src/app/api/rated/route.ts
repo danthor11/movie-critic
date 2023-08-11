@@ -4,14 +4,20 @@ import { CreditDetail, MovieDetail } from "@/types/movieDetailResponse";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
-  const rated = await prisma.movieRated.findMany();
+  const rated = await prisma.movieRated.findMany({
+    orderBy: { date: "desc" },
+    include: {
+      movie: true,
+      Profile: true,
+    },
+  });
   return NextResponse.json(rated);
 }
 
 interface RatedRequest {
   movieId: number;
   userId: string;
-  rated: number;
+  rated: string;
   review: string;
   date: string;
   contains_spoiler: boolean;
@@ -24,6 +30,7 @@ export async function POST(req: NextRequest) {
     const { contains_spoiler, date, movieId, userId, rated, review } =
       (await req.json()) as RatedRequest;
 
+    console.log(rated);
     if (!date) return getErrorResponse(400, "Date is required");
     if (!userId) return getErrorResponse(400, "Profile is required");
     if (!movieId) return getErrorResponse(400, "Movie is required");
@@ -90,7 +97,6 @@ export async function POST(req: NextRequest) {
     let movieRef: string;
 
     if (!isMovieExists) {
-      //Si no exite la pelicula dentro de la base de datos
       const createMovie = await prisma.movie.create({
         data: newMovie,
       });
@@ -98,15 +104,12 @@ export async function POST(req: NextRequest) {
     } else {
       movieRef = isMovieExists.id;
     }
-
-    //Si existe, me traigo la info de la base de datos
-
     const newRated = await prisma.movieRated.create({
       data: {
         date: new Date(Date.parse(date)).toJSON(),
         movieId: movieRef,
         profileId: user.Profile.id,
-        rated,
+        rated: parseFloat(rated),
         review,
         contains_spoiler,
       },
