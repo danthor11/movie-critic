@@ -40,7 +40,7 @@ const RateForm = (props: Props) => {
     async ({ contains_spoiler, date, rated, review }, event) => {
       event?.preventDefault();
 
-      await createRateMovie({
+      const rate = await createRateMovie({
         contains_spoiler,
         date,
         movieId: props.movie,
@@ -49,6 +49,7 @@ const RateForm = (props: Props) => {
         userId: props.profileId,
       });
 
+      console.log(rate);
       props.closeModal();
 
       //Desplegar un mensaje de creacion

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import { prisma } from "@/lib/prisma";
 import { getErrorResponse } from "@/lib/helpers";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 interface UserRequest {
   password: string;
@@ -52,27 +53,23 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
+    const { id } = params;
     const user = await prisma.user.findFirstOrThrow({
-      where: { id: params.id },
-      include: {
-        Profile: {
-          select: {
-            avatar: true,
-            bio: true,
-            id: true,
-            location: true,
-            name: true,
-          },
-        },
+      where: { id },
+      select: {
+        email: true,
+        username: true,
+        Profile: true,
       },
     });
-    return NextResponse.json(user);
+
+    return NextResponse.json(user, {
+      headers: {
+        "Access-Control-Allow-Origin": "*", // Permitir todos los orígenes (ajusta esto según tus necesidades)
+      },
+    });
   } catch (error) {
-    console.log(error, "error,get");
-    return NextResponse.json(
-      { error: "Username and password are not valid" },
-      { status: 410 }
-    );
+    return NextResponse.json({ error: error }, { status: 410 });
   }
 }
 

@@ -2,6 +2,7 @@ import { Loading } from "@/components/Loading";
 import { MovieList } from "@/components/MovieList";
 import RateForm from "@/components/RateForm";
 import { Reviews } from "@/components/Reviews";
+import { TrendingMovies } from "@/components/TrendingMovies";
 import Link from "next/link";
 
 export default function Home() {
@@ -33,14 +34,17 @@ export default function Home() {
         </div>
       </div>
 
-      <section className="h-[calc(50vh-5rem)]">Trending Movies</section>
+      <section className="min-h-[calc(50vh-5rem)]  mx-auto container">
+        Trending Movies
+        <TrendingMovies />
+      </section>
 
-      <section className="min-h-[calc(50vh-5rem)]">
+      <section className="min-h-[calc(50vh-5rem)] mx-auto container">
         <h2>Last reviews</h2>
         <Reviews />
       </section>
 
-      <section className="h-[calc(50vh-5rem)]">
+      <section className="min-h-[calc(50vh-5rem)]  mx-auto container">
         POPULAR REVIEWS THIS WEEK
       </section>
     </div>

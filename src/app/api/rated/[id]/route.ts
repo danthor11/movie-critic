@@ -27,7 +27,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
     if (review) data.review = review;
 
     const newRated = await prisma.movieRated.update({
-      where: { id: parseInt(params.id) },
+      where: { id: params.id },
       data,
     });
 
@@ -41,7 +41,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
 export async function DELETE(req: NextRequest, { params }: Params) {
   try {
     const result = await prisma.movieRated.delete({
-      where: { id: parseInt(params.id) },
+      where: { id: params.id },
     });
     return NextResponse.json(result ? true : false);
   } catch (error) {

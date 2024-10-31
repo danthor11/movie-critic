@@ -61,11 +61,13 @@ export async function PUT(req: NextRequest, { params }: Params) {
 
 export async function GET(req: NextRequest, { params }: Params) {
   try {
+    console.log(params, "profile params");
+
     const profile = await prisma.profile.findFirstOrThrow({
       where: { id: params.id },
       include: { user: { select: { email: true, username: true, id: true } } },
     });
-
+    console.log(profile, "profile");
     return NextResponse.json(profile);
   } catch (error) {
     console.log(error);

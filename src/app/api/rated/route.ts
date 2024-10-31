@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     const { contains_spoiler, date, movieId, userId, rated, review } =
       (await req.json()) as RatedRequest;
 
-    console.log(rated);
+    console.log({ contains_spoiler, date, movieId, userId, rated, review });
     if (!date) return getErrorResponse(400, "Date is required");
     if (!userId) return getErrorResponse(400, "Profile is required");
     if (!movieId) return getErrorResponse(400, "Movie is required");
@@ -44,9 +44,11 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    console.log(user);
     if (!user?.Profile?.id)
       return getErrorResponse(400, "Profile doesnt exists");
 
+    console.log(movieId, "movie id");
     const res = await Promise.all([
       fetch(`${API_URL}/movie/${movieId}?language=en-US`, {
         headers: {

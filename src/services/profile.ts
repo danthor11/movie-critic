@@ -67,10 +67,12 @@ export interface ProfileState {
 }
 
 const resToJson = async (res: Response) => {
+  console.log(res, "response");
   return await res.json();
 };
 
 const formatingUserResponse = (user: UserGetResponse): ProfileState => {
+  console.log(user);
   if (!user.Profile) throw Error("Profile doesnt exists");
   return {
     id: user.Profile.id,
@@ -106,7 +108,13 @@ const formatingProfileResponse = (
 };
 
 export const getProfileById = (id: string) => {
-  return fetch(`http://localhost:3000/api/user/${id}`)
+  console.log(`/api/user/${id}`);
+  return fetch(`/api/user/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
     .then(resToJson)
     .then(formatingUserResponse);
 };

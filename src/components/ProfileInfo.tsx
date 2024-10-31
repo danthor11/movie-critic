@@ -1,5 +1,6 @@
 "use client";
 import { useProfile } from "@/hook/useProfile";
+import { Router } from "next/router";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -50,6 +51,8 @@ export const ProfileInfo = ({ id }: Props) => {
       </div>
     );
 
+  if (!profile) return "";
+
   return (
     <form
       onSubmit={onSubmit}
@@ -66,11 +69,11 @@ export const ProfileInfo = ({ id }: Props) => {
                   className="mx-auto shadow-md  rounded-full border-[4px] border-slate-700 "
                 />
               </div>
-              <div className="mt-2">
+              <div className="mt-2 ">
                 <h1 className="py-1 mx-auto w-fit my-1 px-4 rounded-xl bg-blue-900 font-semibold text-center uppercase">
                   {profile.user.username}
                 </h1>
-                <div>
+                <div className="flex flex-col">
                   <p className="text-gray-400 text-lg font-medium my-1">
                     Name{" "}
                   </p>
@@ -88,11 +91,11 @@ export const ProfileInfo = ({ id }: Props) => {
                   <input
                     type="text"
                     {...register("name", { required: true })}
-                    className={`bg-gray-900 transition-all text-gray-200 border-gray-800 font-medium text-lg
+                    className={` bg-gray-900 transition-all p-2.5 text-gray-200 border-gray-800 text-lg
                       ${
                         !isEdit
                           ? "opacity-0 absolute w-0 -z-10 translate-x-8"
-                          : "opacity-100 "
+                          : "opacity-100 w-full "
                       } 
                       `}
                   />
@@ -115,18 +118,16 @@ export const ProfileInfo = ({ id }: Props) => {
                   <input
                     type="text"
                     {...register("email", { required: true })}
-                    className={`bg-gray-900 transition-all text-gray-200 border-gray-800 font-medium text-lg
+                    className={`bg-gray-900 transition-all  p-2.5 text-gray-200 border-gray-800 text-lg
                     ${
                       !isEdit
                         ? "opacity-0 absolute w-0 -z-10 translate-x-8"
-                        : "opacity-100 "
+                        : "opacity-100 w-full "
                     } `}
                   />
                 </div>
                 <div>
-                  <h4 className="text-gray-400 text-lg font-medium my-1">
-                    Location
-                  </h4>
+                  <h4 className="text-gray-400 text-lg  my-1">Location</h4>
 
                   <p
                     className={`${
@@ -149,11 +150,11 @@ export const ProfileInfo = ({ id }: Props) => {
                   <input
                     type="text"
                     {...register("location", { required: true })}
-                    className={`bg-gray-900 transition-all text-gray-200 border-gray-800 font-medium text-lg
+                    className={`bg-gray-900 transition-all p-2.5 text-gray-200 border-gray-800 font-medium text-lg
                       ${
                         !isEdit
                           ? "opacity-0 absolute w-0 -z-10 translate-x-8"
-                          : "opacity-100 "
+                          : "opacity-100 w-full  "
                       } `}
                   />
                 </div>

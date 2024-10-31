@@ -16,6 +16,7 @@ export async function middleware(
 
   if (req.nextUrl.pathname === "/") return;
 
+  //Profile
   if (
     req.nextUrl.pathname.startsWith("/profile") &&
     req.nextUrl.pathname.endsWith("create")
@@ -35,13 +36,15 @@ export async function middleware(
   } else if (req.nextUrl.pathname.startsWith("/profile/")) {
     const id = req.nextUrl.pathname.slice(9, req.nextUrl.pathname.length);
 
-    const res = await fetch(`http://localhost:3000/api/user/${id}`);
-    const user = await res.json();
-    console.log(id, user);
-
-    if (user && user?.Profile) return;
-
-    return NextResponse.redirect(new URL(`/profile/${id}/create`, req.url));
+    try {
+      const res = await fetch(`http://localhost:3000/api/user/${id}`);
+      const user = await res.json();
+      console.log(user);
+      if (user && user.Profile) return;
+    } catch (error) {
+      console.error(error);
+      return NextResponse.redirect(new URL(`/profile/${id}/create`, req.url));
+    }
   }
 
   if (

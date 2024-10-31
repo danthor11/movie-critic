@@ -34,11 +34,11 @@ export const useProfile = (id: string) => {
     try {
       toggleLoading(true);
       const res = await getProfileById(id);
-
+      console.log(res);
       toggleLoading(false);
       setProfile(res);
     } catch (error) {
-      console.log(error);
+      console.log(error, "getProfile");
     }
   }, [id, toggleLoading]);
 

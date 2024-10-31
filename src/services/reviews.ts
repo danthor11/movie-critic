@@ -35,6 +35,16 @@ export interface Movie {
 
 export const getAllReviews = (): Promise<Review[]> => {
   return fetch("/api/rated")
-    .then((res) => res.json())
+    .then((res) => {
+      return res.json();
+    })
+    .catch((err) => err);
+};
+
+export const getPopularReviews = (): Promise<Review[]> => {
+  return fetch("/api/rated/popular")
+    .then((res) => {
+      return res.json();
+    })
     .catch((err) => err);
 };

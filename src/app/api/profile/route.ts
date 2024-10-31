@@ -4,7 +4,6 @@ import { getErrorResponse } from "@/lib/helpers";
 
 export async function GET() {
   const profiles = await prisma.profile.findMany();
-  console.log(profiles);
   return NextResponse.json(profiles);
 }
 

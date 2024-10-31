@@ -22,7 +22,6 @@ export async function POST(request: NextRequest) {
     if (userExist.length)
       return getErrorResponse(400, "Email or username already exists.");
 
-    console.log("SDDS");
     const userSaved = await prisma?.user.create({
       data: {
         email,
@@ -30,14 +29,13 @@ export async function POST(request: NextRequest) {
         username,
       },
     });
-    console.log("SDDS");
 
     // const profile = await prisma.profile.create({
     //   data: {
-    //     name: "daniel",
-    //     bio: "soy daniel",
-    //     location: "venezuela",
-    //     avatar: "D",
+    //     name: "",
+    //     bio: "",
+    //     location: "",
+    //     avatar: "",
     //     userId: userSaved.id,
     //   },
     // });
